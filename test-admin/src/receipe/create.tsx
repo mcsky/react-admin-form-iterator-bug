@@ -1,55 +1,66 @@
 import {
-    ArrayInput,
-    AutocompleteInput,
-    Create,
-    NumberInput,
-    required,
-    SimpleForm,
-    SimpleFormIterator
+  ArrayInput,
+  AutocompleteInput,
+  Create,
+  DateInput,
+  minValue,
+  NumberInput,
+  required,
+  SimpleForm,
+  SimpleFormIterator,
+  TextInput,
 } from "react-admin";
-import {IngredientsRenderer} from "./ingredients/ingredients-renderer";
 
 const choices = [
-    {
-        id: 'carbonara-pasta',
-        name: 'Pâtes carbonara'
-    },
-    {
-        id: 'pizza',
-        name: 'Pizza'
-    },
-]
+  {
+    id: "carbonara-pasta",
+    name: "Pâtes carbonara",
+  },
+  {
+    id: "pizza",
+    name: "Pizza",
+  },
+];
+
 export const CreateReceipe = () => {
-    return <Create>
-        <SimpleForm>
-            <ArrayInput
-                // defaultValue props make infinite rendering from V4.
-                // defaultValue={value || DEFAULT_AND_FILTER_VALUES}
-                label={false}
-                source={'recettes'}
-            >
-                <div>
-                    <SimpleFormIterator
-                        inline
-                        disableReordering
-                    >
-                        <AutocompleteInput
-                            validate={required()}
-                            label="Recette"
-                            source={'name'}
-                            name="field"
-                            choices={choices}
-                            variant="outlined"
-                            // onChange={(fieldId: string) => handleOnChange(fieldId, source, setValue)}
-                        />
-                        <NumberInput
-                            source={'countPersons'}
-                            label={'Nombre de personnes'}
-                        />
-                        <IngredientsRenderer />
-                    </SimpleFormIterator>
-                </div>
+  return (
+    <Create>
+      <SimpleForm>
+        <ArrayInput label={false} source={"recettes"}>
+          <SimpleFormIterator inline disableReordering>
+            <AutocompleteInput
+              validate={required()}
+              label="Recette"
+              source={"name"}
+              name="field"
+              choices={choices}
+              variant="outlined"
+            />
+            <NumberInput
+              source={"countPersons"}
+              label={"Nombre de personnes"}
+            />
+            <ArrayInput label={false} source={"ingredients"}>
+              <SimpleFormIterator inline disableReordering>
+                <AutocompleteInput
+                  validate={required()}
+                  label="Ingrédient"
+                  source={"name"}
+                  choices={choices}
+                  variant="outlined"
+                />
+                <NumberInput
+                  source={"quantity"}
+                  validate={minValue(0)}
+                  label={"Quantité"}
+                />
+                <DateInput source={"validUntil"} label={"Périmé le"} />
+                <TextInput source={"commentary"} name={"Commentaire"} />
+              </SimpleFormIterator>
             </ArrayInput>
-        </SimpleForm>
+          </SimpleFormIterator>
+        </ArrayInput>
+      </SimpleForm>
     </Create>
-}
+  );
+};
